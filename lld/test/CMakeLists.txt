@@ -8,6 +8,9 @@ llvm_canonicalize_cmake_booleans(
   LLVM_ENABLE_ZLIB
   LLVM_ENABLE_LIBXML2
   LLD_DEFAULT_LD_LLD_IS_MINGW
+  LLVM_BUILD_EXAMPLES
+  LLVM_ENABLE_PLUGINS
+  LLVM_BYE_LINK_INTO_TOOLS
   )
 
 configure_lit_site_cfg(
@@ -31,6 +34,11 @@ if (NOT LLD_BUILT_STANDALONE)
     llvm-objdump llvm-pdbutil llvm-readelf llvm-readobj llvm-strip
     llvm-symbolizer not obj2yaml opt split-file yaml2obj
     )
+    if (NOT WIN32 AND LLVM_BUILD_EXAMPLES)
+      list(APPEND LLD_TEST_DEPS
+        Bye
+        )
+    endif()
 endif()
 
 if (LLVM_INCLUDE_TESTS)

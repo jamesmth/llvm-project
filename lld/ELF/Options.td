@@ -696,3 +696,5 @@ def: F<"Qy">;
 defm mips_got_size:
   Eq<"mips-got-size", "Max size of a single MIPS GOT. 0x10000 by default.">,
   Flags<[HelpHidden]>;
+
+defm load_pass_plugins: EEq<"load-pass-plugin", "Load passes from plugin library">;
