@@ -132,11 +132,63 @@ struct is_move_assignable {
     static constexpr bool value = decltype(get((T*)nullptr))::value;
 };
 
-
-// An implementation of `std::is_trivially_copyable` since STL version
+// A close implementation of `std::is_trivially_copyable` since STL version
 // is not equally supported by all compilers, especially GCC 4.9.
 // Uniform implementation of this trait is important for ABI compatibility
 // as it has an impact on SmallVector's ABI (among others).
+// This type trait is not exactly in line with `std::is_trivially_copyable`
+// as we cannot test for exactly what `std::is_trivially_copyable` tests for.
+//
+// `llvm::is_trivially_copyable` checks for the following:
+//   * if `T x(declval<const T&>())` is well formed,
+//     then all of T's copy constructors must be trivial,
+//     and there must be at least one non-deleted copy constructor.
+//   * if `declval<T&>() = declval<const T&>()` is well formed,
+//     then all of T's copy assignment operators must be trivial,
+//     and there must be at least one non-deleted copy assignment operator.
+//   * if `T x(declval<T&&>())` is well formed,
+//     then all of T's move constructors must be trivial,
+//     and there must be at least one non-deleted move constructor
+//   * if `declval<T&>() = declval<T&&>()` is well formed,
+//     then all of T's move assignment operators must be trivial,
+//     and there must be at least one non-deleted move assignment operator.
+//   * One of the above clauses must be satisfied; in other words,
+//     it must be either copy constructible, or copy assignable, or
+//     move constructible, or move assignable.
+//   * T must be trivially destructible
+//
+// whereas `std::is_trivially_copyable` checks for:
+//   all of T's copy constructors, move constructors,
+//   copy assignment operators, and move assignment operators are
+//   trivial or deleted, and at least one of these is non-deleted.
+//
+// in addition to the trivially destructible requirement. As an example,
+// see the following class:
+//
+//   struct foo {
+//     foo(const foo&) = default;
+//     foo& operator=(const volatile foo&) = delete;
+//     template <typename T>
+//     foo& operator=(const T&) { return *this; }
+//
+//     foo(foo&&) = delete;
+//     foo& operator=(foo&&) = delete;
+//     ~foo() = default;
+//   };
+//
+// `llvm::is_trivially_copyable<foo>()` is false,
+// since `declval<T&>() = declval<const T&>()` compiles
+// (it finds the template assignment operator),
+// but `foo` has no non-deleted copy assignment operator
+// (a template is never a copy assignment operator).
+//
+// `std::is_trivially_copyable<foo>()` is true,
+// since there are no non-deleted copy assignment operators,
+// and there is a non-deleted trivial copy constructor.
+//
+// This difference is important, since:
+//   * `std::is_trivially_copyable<pair<int, int>>`, but
+//   * `!llvm::is_trivially_copyable<pair<int, int>>`
 template <typename T>
 class is_trivially_copyable {
 
@@ -176,11 +228,6 @@ class is_trivially_copyable {
       (has_deleted_move_constructor || has_trivial_move_constructor) &&
       (has_deleted_copy_assign || has_trivial_copy_assign) &&
       (has_deleted_copy_constructor || has_trivial_copy_constructor);
-
-#ifdef HAVE_STD_IS_TRIVIALLY_COPYABLE
-  static_assert(value == std::is_trivially_copyable<T>::value,
-                "inconsistent behavior between llvm:: and std:: implementation of is_trivially_copyable");
-#endif
 };
 template <typename T>
 class is_trivially_copyable<T*> : public std::true_type {
