@@ -66,6 +66,10 @@ set(LLVM_LIBDIR_SUFFIX "" CACHE STRING "Define suffix of library directory name 
 # Must go after `project(..)`.
 include(GNUInstallDirs)
 
+if (LLVM_EXPORT_SYMBOLS_FOR_PLUGINS)
+  add_definitions(-DEXPORT_SYMBOLS)
+endif()
+
 # This C++ standard is required to build LLVM.
 set(LLVM_REQUIRED_CXX_STANDARD 17)
 
