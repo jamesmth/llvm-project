@@ -53,6 +53,10 @@ project(LLVM
 # Must go after project(..)
 include(GNUInstallDirs)
 
+if (LLVM_EXPORT_SYMBOLS_FOR_PLUGINS)
+  add_definitions(-DEXPORT_SYMBOLS)
+endif()
+
 set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ standard to conform to")
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 if (CYGWIN)
