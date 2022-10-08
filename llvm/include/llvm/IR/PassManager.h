@@ -34,6 +34,10 @@
 ///
 //===----------------------------------------------------------------------===//
 
+#ifdef _WIN32
+  #pragma warning( disable : 4251 )
+#endif
+
 #ifndef LLVM_IR_PASSMANAGER_H
 #define LLVM_IR_PASSMANAGER_H
 
@@ -62,6 +66,24 @@
 #include <vector>
 
 namespace llvm {
+
+#ifdef _WIN32
+  #define DLL_EXPORT __declspec(dllexport)
+#else
+  #define DLL_EXPORT
+#endif
+
+#ifdef _WIN32
+  #define DLL_IMPORT __declspec(dllimport)
+#else
+  #define DLL_IMPORT
+#endif
+
+#ifdef EXPORT_SYMBOLS
+  #define DLL_API DLL_EXPORT
+#else
+  #define DLL_API DLL_IMPORT
+#endif
 
 /// A special type used by analysis passes to provide an address that
 /// identifies that particular analysis pass type.
@@ -100,8 +122,13 @@ private:
 
 template <typename IRUnitT> AnalysisSetKey AllAnalysesOn<IRUnitT>::SetKey;
 
+#ifdef _WIN32
+template class DLL_API AllAnalysesOn<Module>;
+template class DLL_API AllAnalysesOn<Function>;
+#else
 extern template class AllAnalysesOn<Module>;
 extern template class AllAnalysesOn<Function>;
+#endif
 
 /// Represents analyses that only rely on functions' control flow.
 ///
@@ -152,7 +179,7 @@ private:
 ///     // The analysis has been successfully preserved ...
 ///   }
 /// ```
-class PreservedAnalyses {
+class DLL_API PreservedAnalyses {
 public:
   /// Convenience factory function for the empty preserved set.
   static PreservedAnalyses none() { return PreservedAnalyses(); }
@@ -571,12 +598,16 @@ protected:
   std::vector<std::unique_ptr<PassConceptT>> Passes;
 };
 
+#ifdef _WIN32
+template class DLL_API PassManager<Module>;
+template class DLL_API PassManager<Function>;
+#else
 extern template class PassManager<Module>;
+extern template class PassManager<Function>;
+#endif
 
 /// Convenience typedef for a pass manager over modules.
 using ModulePassManager = PassManager<Module>;
-
-extern template class PassManager<Function>;
 
 /// Convenience typedef for a pass manager over functions.
 using FunctionPassManager = PassManager<Function>;
@@ -896,12 +927,16 @@ private:
   AnalysisResultMapT AnalysisResults;
 };
 
+#ifdef _WIN32
+template class DLL_API AnalysisManager<Module>;
+template class DLL_API AnalysisManager<Function>;
+#else
 extern template class AnalysisManager<Module>;
+extern template class AnalysisManager<Function>;
+#endif
 
 /// Convenience typedef for the Module analysis manager.
 using ModuleAnalysisManager = AnalysisManager<Module>;
-
-extern template class AnalysisManager<Function>;
 
 /// Convenience typedef for the Function analysis manager.
 using FunctionAnalysisManager = AnalysisManager<Function>;
@@ -1017,8 +1052,13 @@ bool FunctionAnalysisManagerModuleProxy::Result::invalidate(
 
 // Ensure the \c FunctionAnalysisManagerModuleProxy is provided as an extern
 // template.
+#ifdef _WIN32
+template class DLL_API InnerAnalysisManagerProxy<FunctionAnalysisManager,
+                                                 Module>;
+#else
 extern template class InnerAnalysisManagerProxy<FunctionAnalysisManager,
                                                 Module>;
+#endif
 
 /// An analysis over an "inner" IR unit that provides access to an
 /// analysis manager over a "outer" IR unit.  The inner unit must be contained
