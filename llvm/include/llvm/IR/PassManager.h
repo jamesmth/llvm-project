@@ -34,6 +34,10 @@
 ///
 //===----------------------------------------------------------------------===//
 
+#ifdef _WIN32
+  #pragma warning( disable : 4251 )
+#endif
+
 #ifndef LLVM_IR_PASSMANAGER_H
 #define LLVM_IR_PASSMANAGER_H
 
@@ -42,6 +46,7 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/TinyPtrVector.h"
 #include "llvm/IR/Analysis.h"
+#include "llvm/IR/DLLPlugin.h"
 #include "llvm/IR/PassManagerInternal.h"
 #include "llvm/Support/TypeName.h"
 #include <cassert>
@@ -231,7 +236,13 @@ void printIRUnitNameForStackTrace(raw_ostream &OS, const IRUnitT &IR);
 template <>
 void printIRUnitNameForStackTrace<Module>(raw_ostream &OS, const Module &IR);
 
+#ifdef _WIN32
+template class DLL_API PassManager<Module>;
+template class DLL_API PassManager<Function>;
+#else
 extern template class PassManager<Module>;
+extern template class PassManager<Function>;
+#endif
 
 /// Convenience typedef for a pass manager over modules.
 using ModulePassManager = PassManager<Module>;
@@ -239,8 +250,6 @@ using ModulePassManager = PassManager<Module>;
 template <>
 void printIRUnitNameForStackTrace<Function>(raw_ostream &OS,
                                             const Function &IR);
-
-extern template class PassManager<Function>;
 
 /// Convenience typedef for a pass manager over functions.
 using FunctionPassManager = PassManager<Function>;
@@ -531,12 +540,16 @@ private:
   AnalysisResultMapT AnalysisResults;
 };
 
+#ifdef _WIN32
+template class DLL_API AnalysisManager<Module>;
+template class DLL_API AnalysisManager<Function>;
+#else
 extern template class AnalysisManager<Module>;
+extern template class AnalysisManager<Function>;
+#endif
 
 /// Convenience typedef for the Module analysis manager.
 using ModuleAnalysisManager = AnalysisManager<Module>;
-
-extern template class AnalysisManager<Function>;
 
 /// Convenience typedef for the Function analysis manager.
 using FunctionAnalysisManager = AnalysisManager<Function>;
@@ -652,8 +665,13 @@ bool FunctionAnalysisManagerModuleProxy::Result::invalidate(
 
 // Ensure the \c FunctionAnalysisManagerModuleProxy is provided as an extern
 // template.
+#ifdef _WIN32
+template class DLL_API InnerAnalysisManagerProxy<FunctionAnalysisManager,
+                                                 Module>;
+#else
 extern template class InnerAnalysisManagerProxy<FunctionAnalysisManager,
                                                 Module>;
+#endif
 
 /// An analysis over an "inner" IR unit that provides access to an
 /// analysis manager over a "outer" IR unit.  The inner unit must be contained

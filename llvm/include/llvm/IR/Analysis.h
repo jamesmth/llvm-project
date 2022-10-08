@@ -13,6 +13,7 @@
 #define LLVM_IR_ANALYSIS_H
 
 #include "llvm/ADT/SmallPtrSet.h"
+#include "llvm/IR/DLLPlugin.h"
 
 namespace llvm {
 
@@ -56,8 +57,13 @@ private:
 
 template <typename IRUnitT> AnalysisSetKey AllAnalysesOn<IRUnitT>::SetKey;
 
+#ifdef _WIN32
+template class DLL_API AllAnalysesOn<Module>;
+template class DLL_API AllAnalysesOn<Function>;
+#else
 extern template class AllAnalysesOn<Module>;
 extern template class AllAnalysesOn<Function>;
+#endif
 
 /// Represents analyses that only rely on functions' control flow.
 ///
@@ -108,7 +114,7 @@ private:
 ///     // The analysis has been successfully preserved ...
 ///   }
 /// ```
-class PreservedAnalyses {
+class DLL_API PreservedAnalyses {
 public:
   /// Convenience factory function for the empty preserved set.
   static PreservedAnalyses none() { return PreservedAnalyses(); }
