@@ -54,6 +54,24 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+  #define DLL_EXPORT __declspec(dllexport)
+#else
+  #define DLL_EXPORT
+#endif
+
+#ifdef _WIN32
+  #define DLL_IMPORT __declspec(dllimport)
+#else
+  #define DLL_IMPORT
+#endif
+
+#ifdef EXPORT_SYMBOLS
+  #define DLL_API DLL_EXPORT
+#else
+  #define DLL_API DLL_IMPORT
+#endif
+
 namespace llvm {
 
 class Function;
@@ -503,7 +521,7 @@ private:
   }
 
   /// Get an analysis result, running the pass if necessary.
-  ResultConceptT &getResultImpl(AnalysisKey *ID, IRUnitT &IR,
+  DLL_API ResultConceptT &getResultImpl(AnalysisKey *ID, IRUnitT &IR,
                                 ExtraArgTs... ExtraArgs);
 
   /// Get a cached analysis result or return null.
@@ -630,7 +648,7 @@ private:
   friend AnalysisInfoMixin<
       InnerAnalysisManagerProxy<AnalysisManagerT, IRUnitT>>;
 
-  static AnalysisKey Key;
+  DLL_API static AnalysisKey Key;
 
   AnalysisManagerT *InnerAM;
 };

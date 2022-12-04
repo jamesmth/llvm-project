@@ -14,6 +14,24 @@
 
 #include "llvm/ADT/SmallPtrSet.h"
 
+#ifdef _WIN32
+  #define DLL_EXPORT __declspec(dllexport)
+#else
+  #define DLL_EXPORT
+#endif
+
+#ifdef _WIN32
+  #define DLL_IMPORT __declspec(dllimport)
+#else
+  #define DLL_IMPORT
+#endif
+
+#ifdef EXPORT_SYMBOLS
+  #define DLL_API DLL_EXPORT
+#else
+  #define DLL_API DLL_IMPORT
+#endif
+
 namespace llvm {
 
 class Function;
@@ -51,7 +69,7 @@ public:
   static AnalysisSetKey *ID() { return &SetKey; }
 
 private:
-  static AnalysisSetKey SetKey;
+  DLL_API static AnalysisSetKey SetKey;
 };
 
 template <typename IRUnitT> AnalysisSetKey AllAnalysesOn<IRUnitT>::SetKey;
@@ -300,7 +318,7 @@ public:
 
 private:
   /// A special key used to indicate all analyses.
-  static AnalysisSetKey AllAnalysesKey;
+  DLL_API static AnalysisSetKey AllAnalysesKey;
 
   /// The IDs of analyses and analysis sets that are preserved.
   SmallPtrSet<void *, 2> PreservedIDs;
