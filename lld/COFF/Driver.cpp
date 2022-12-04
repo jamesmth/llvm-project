@@ -1454,6 +1454,11 @@ void LinkerDriver::link(ArrayRef<const char *> argsArr) {
     }
   }
 
+  if (args.hasArg(OPT_load_pass_plugins))
+    config->passPlugins = args.getAllArgValues(OPT_load_pass_plugins);
+
+  config->ltoNewPmPasses = args.getLastArgValue(OPT_lto_newpm_passes);
+
   // Limited ICF is enabled if GC is enabled and ICF was never mentioned
   // explicitly.
   // FIXME: LLD only implements "limited" ICF, i.e. it only merges identical
