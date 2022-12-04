@@ -316,7 +316,8 @@ bool llvm::runPassPipeline(StringRef Arg0, Module &M, TargetMachine *TM,
     auto PassPlugin = PassPlugin::Load(PluginFN);
     if (!PassPlugin) {
       errs() << "Failed to load passes from '" << PluginFN
-             << "'. Request ignored.\n";
+             << "' (" << PassPlugin.takeError()
+             << "). Request ignored.\n";
       continue;
     }
 
