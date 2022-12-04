@@ -88,6 +88,12 @@ static lto::Config createConfig() {
   c.CSIRProfile = std::string(config->ltoCSProfileFile);
   c.RunCSIRInstr = config->ltoCSProfileGenerate;
 
+  for (const std::string& pluginFn : config->passPlugins)
+    c.PassPlugins.push_back(pluginFn);
+
+  // Set up a custom pipeline if we've been asked to.
+  c.OptPipeline = std::string(config->ltoNewPmPasses);
+
   if (config->saveTemps)
     checkError(c.addSaveTemps(std::string(config->outputFile) + ".",
                               /*UseInputModulePath*/ true));
