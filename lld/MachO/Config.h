@@ -210,6 +210,9 @@ struct Configuration {
   llvm::StringRef csProfilePath;
   bool pgoWarnMismatch;
 
+  llvm::SmallVector<llvm::StringRef, 0> passPlugins;
+  llvm::StringRef ltoNewPmPasses;
+
   bool callGraphProfileSort = false;
   llvm::StringRef printSymbolOrder;
 
