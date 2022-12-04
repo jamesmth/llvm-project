@@ -214,6 +214,9 @@ struct Configuration {
   bool pgoWarnMismatch;
   bool warnThinArchiveMissingMembers;
 
+  llvm::SmallVector<llvm::StringRef, 0> passPlugins;
+  llvm::StringRef ltoNewPmPasses;
+
   bool callGraphProfileSort = false;
   llvm::StringRef printSymbolOrder;
 

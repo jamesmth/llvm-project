@@ -1750,6 +1750,9 @@ bool link(ArrayRef<const char *> argsArr, llvm::raw_ostream &stdoutOS,
                    OPT_no_warn_thin_archive_missing_members, true);
   config->generateUuid = !args.hasArg(OPT_no_uuid);
 
+  config->passPlugins = args::getStrings(args, OPT_load_pass_plugins);
+  config->ltoNewPmPasses = args.getLastArgValue(OPT_lto_newpm_passes);
+
   for (const Arg *arg : args.filtered(OPT_alias)) {
     config->aliasedSymbols.push_back(
         std::make_pair(arg->getValue(0), arg->getValue(1)));
