@@ -73,6 +73,13 @@ static lto::Config createConfig() {
   c.RunCSIRInstr = config->csProfileGenerate;
   c.OptLevel = config->ltoo;
   c.CGOptLevel = config->ltoCgo;
+
+  for (StringRef pluginFn : config->passPlugins)
+    c.PassPlugins.push_back(std::string(pluginFn));
+
+  // Set up a custom pipeline if we've been asked to.
+  c.OptPipeline = std::string(config->ltoNewPmPasses);
+
   if (config->saveTemps)
     checkError(c.addSaveTemps(config->outputFile.str() + ".",
                               /*UseInputModulePath=*/true));
