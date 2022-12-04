@@ -471,7 +471,8 @@ int main(int argc, char **argv) {
     auto Plugin = PassPlugin::Load(PluginPath);
     if (!Plugin) {
       errs() << "Failed to load passes from '" << PluginPath
-             << "'. Request ignored.\n";
+             << "' (" << Plugin.takeError()
+             << "). Request ignored.\n";
       return;
     }
     PluginList.emplace_back(Plugin.get());
