@@ -1351,6 +1351,9 @@ bool macho::link(ArrayRef<const char *> argsArr, llvm::raw_ostream &stdoutOS,
       OPT_call_graph_profile_sort, OPT_no_call_graph_profile_sort, true);
   config->printSymbolOrder = args.getLastArgValue(OPT_print_symbol_order);
 
+  config->passPlugins = args::getStrings(args, OPT_load_pass_plugins);
+  config->ltoNewPmPasses = args.getLastArgValue(OPT_lto_newpm_passes);
+
   for (const Arg *arg : args.filtered(OPT_alias)) {
     config->aliasedSymbols.push_back(
         std::make_pair(arg->getValue(0), arg->getValue(1)));

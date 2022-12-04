@@ -177,6 +177,9 @@ struct Configuration {
   std::vector<SectionAlign> sectionAlignments;
   std::vector<SegmentProtection> segmentProtections;
 
+  std::vector<llvm::StringRef> passPlugins;
+  llvm::StringRef ltoNewPmPasses;
+
   bool callGraphProfileSort = false;
   llvm::StringRef printSymbolOrder;
 
