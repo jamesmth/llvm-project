@@ -132,6 +132,8 @@ struct Configuration {
   llvm::SmallString<128> pdbPath;
   llvm::SmallString<128> pdbSourcePath;
   std::vector<llvm::StringRef> argv;
+  std::vector<std::string> passPlugins;
+  llvm::StringRef ltoNewPmPasses;
 
   // Symbols in this set are considered as live by the garbage collector.
   std::vector<Symbol *> gcroot;

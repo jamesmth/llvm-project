@@ -1786,6 +1786,11 @@ void LinkerDriver::linkerMain(ArrayRef<const char *> argsArr) {
     }
   }
 
+  if (args.hasArg(OPT_load_pass_plugins))
+    config->passPlugins = args.getAllArgValues(OPT_load_pass_plugins);
+
+  config->ltoNewPmPasses = args.getLastArgValue(OPT_lto_newpm_passes);
+
   if (!icfLevel)
     icfLevel = doGC ? ICFLevel::All : ICFLevel::None;
   config->doGC = doGC;

@@ -95,6 +95,12 @@ lto::Config BitcodeCompiler::createConfig() {
   c.RunCSIRInstr = ctx.config.ltoCSProfileGenerate;
   c.PGOWarnMismatch = ctx.config.ltoPGOWarnMismatch;
 
+  for (const std::string& pluginFn : ctx.config.passPlugins)
+    c.PassPlugins.push_back(pluginFn);
+
+  // Set up a custom pipeline if we've been asked to.
+  c.OptPipeline = std::string(ctx.config.ltoNewPmPasses);
+
   if (ctx.config.saveTemps)
     checkError(c.addSaveTemps(std::string(ctx.config.outputFile) + ".",
                               /*UseInputModulePath*/ true));

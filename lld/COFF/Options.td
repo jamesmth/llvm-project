@@ -293,6 +293,9 @@ def map_info : P<"mapinfo", "Include the specified information in a map file">;
 def show_timing : F<"time">;
 def summary : F<"summary">;
 
+def load_pass_plugins: P<"load-pass-plugin", "Load passes from plugin library">;
+def lto_newpm_passes: P<"lto-newpm-passes", "Passes to run during LTO">;
+
 //==============================================================================
 // The flags below do nothing. They are defined only for link.exe compatibility.
 //==============================================================================
