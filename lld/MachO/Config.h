@@ -170,6 +170,9 @@ struct Configuration {
   std::vector<SectionAlign> sectionAlignments;
   std::vector<SegmentProtection> segmentProtections;
 
+  std::vector<llvm::StringRef> passPlugins;
+  llvm::StringRef ltoNewPmPasses;
+
   llvm::DenseMap<llvm::StringRef, SymbolPriorityEntry> priorities;
   llvm::MapVector<std::pair<const InputSection *, const InputSection *>,
                   uint64_t>
