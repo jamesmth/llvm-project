@@ -68,6 +68,10 @@ struct Configuration {
   std::vector<llvm::StringRef> librarySearchPaths;
   std::vector<llvm::StringRef> frameworkSearchPaths;
   std::vector<llvm::StringRef> runtimePaths;
+
+  std::vector<llvm::StringRef> passPlugins;
+  llvm::StringRef ltoNewPmPasses;
+
   llvm::DenseMap<llvm::StringRef, SymbolPriorityEntry> priorities;
 };
 

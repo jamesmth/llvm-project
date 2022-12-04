@@ -742,6 +742,9 @@ bool macho::link(ArrayRef<const char *> argsArr, bool canExitEarly,
   config->demangle = args.hasArg(OPT_demangle);
   config->implicitDylibs = !args.hasArg(OPT_no_implicit_dylibs);
 
+  config->passPlugins = args::getStrings(args, OPT_load_pass_plugins);
+  config->ltoNewPmPasses = args.getLastArgValue(OPT_lto_newpm_passes);
+
   if (const opt::Arg *arg = args.getLastArg(OPT_static, OPT_dynamic))
     config->staticLink = (arg->getOption().getID() == OPT_static);
 

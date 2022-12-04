@@ -35,6 +35,13 @@ static lto::Config createConfig() {
   c.PreCodeGenPassesHook = [](legacy::PassManager &pm) {
     pm.add(createObjCARCContractPass());
   };
+
+  for (StringRef pluginFn : config->passPlugins)
+    c.PassPlugins.push_back(std::string(pluginFn));
+
+  // Set up a custom pipeline if we've been asked to.
+  c.OptPipeline = std::string(config->ltoNewPmPasses);
+
   return c;
 }
 
