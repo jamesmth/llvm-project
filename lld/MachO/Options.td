@@ -156,6 +156,12 @@ defm pgo_warn_mismatch: BB<"pgo-warn-mismatch",
 defm warn_thin_archive_missing_members : BB<"warn-thin-archive-missing-members",
   "Warn on missing object files referenced by thin archives (default)",
   "Do not warn on missing object files referenced by thin archives">, Group<grp_lld>;
+def load_pass_plugins: Flag<["--"], "load-pass-plugin=">,
+    HelpText<"Load passes from plugin library">,
+    Group<grp_lld>;
+def lto_newpm_passes: Flag<["--"], "lto-newpm-passes=">,
+    HelpText<"Passes to run during LTO">,
+    Group<grp_lld>;
 
 // This is a complete Options.td compiled from Apple's ld(1) manpage
 // dated 2018-03-07 and cross checked with ld64 source code in repo
