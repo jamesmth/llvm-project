@@ -73,6 +73,12 @@ def thinlto_cache_policy: Joined<["--"], "thinlto-cache-policy=">,
     Group<grp_lld>;
 def O : JoinedOrSeparate<["-"], "O">,
     HelpText<"Optimize output file size">;
+def load_pass_plugins: Flag<["--"], "load-pass-plugin=">,
+    HelpText<"Load passes from plugin library">,
+    Group<grp_lld>;
+def lto_newpm_passes: Flag<["--"], "lto-newpm-passes=">,
+    HelpText<"Passes to run during LTO">,
+    Group<grp_lld>;
 
 // This is a complete Options.td compiled from Apple's ld(1) manpage
 // dated 2018-03-07 and cross checked with ld64 source code in repo

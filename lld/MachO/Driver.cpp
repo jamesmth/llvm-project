@@ -1234,6 +1234,9 @@ bool macho::link(ArrayRef<const char *> argsArr, bool canExitEarly,
   config->dedupLiterals = args.hasArg(OPT_deduplicate_literals) ||
                           config->icfLevel != ICFLevel::none;
 
+  config->passPlugins = args::getStrings(args, OPT_load_pass_plugins);
+  config->ltoNewPmPasses = args.getLastArgValue(OPT_lto_newpm_passes);
+
   // FIXME: Add a commandline flag for this too.
   config->zeroModTime = getenv("ZERO_AR_DATE");
 
